@@ -24,12 +24,12 @@ describe "IPStats" do
   end
   
   it "should pass rate limiting" do
-    ipstats = ADS::IPStats.new(10, 60000)
+    ipstats = ADS::IPStats.new(10, 60000, 300000)
     ipstats.shouldRateLimit("1.1.1.1", get_time).must_equal false
   end
 
   it "should fail rate limiting with more that 10 requests in 60 seconds" do
-    ipstats = ADS::IPStats.new(10, 60000)
+    ipstats = ADS::IPStats.new(10, 60000, 300000)
     t = get_time
     (1..15).each {|i| ipstats.shouldRateLimit("1.1.1.1", t)}
     ipstats.shouldRateLimit("1.1.1.1", get_time).must_equal true

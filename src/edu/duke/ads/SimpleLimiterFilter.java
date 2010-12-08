@@ -27,15 +27,16 @@ public class SimpleLimiterFilter implements Filter
 {
 
   private int maxRequestsPerTimePeriod = 50; // 50 requests per time period
-  private int timePeriodInMs = 300000; // 5 minutes
+  private int timePeriodInMs = 30000; // 30 seconds
+  private int bandTimeInMs = 300000; // band for 5 minutes
   private IPStats ipStats;
   private ServletContext servletContext;
-  
 
   public void init(FilterConfig fc) throws ServletException
   {
     String maxReqs = fc.getInitParameter("maxRequestsPerTimePeriod");
     String timePeriod = fc.getInitParameter("timePeriodInMs");
+    String bandTime = fc.getInitParameter("bandTimeInMs");
 
     if (maxReqs != null)
     {
@@ -46,9 +47,12 @@ public class SimpleLimiterFilter implements Filter
     {
       timePeriodInMs = Integer.parseInt(timePeriod);
     }
-    servletContext = fc.getServletContext();
+    if (bandTime != null) {
+      bandTimeInMs = Integer.parseInt(bandTime);
+    }
 
-    ipStats = new IPStats(maxRequestsPerTimePeriod, timePeriodInMs);
+    servletContext = fc.getServletContext();
+    ipStats = new IPStats(maxRequestsPerTimePeriod, timePeriodInMs, bandTimeInMs);
   }
 
   public void doFilter(ServletRequest request, ServletResponse response, FilterChain fc)

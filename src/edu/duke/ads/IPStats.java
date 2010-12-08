@@ -17,11 +17,13 @@ public class IPStats
   private ConcurrentHashMap<String, IPTracker> ipToIPTracker = new ConcurrentHashMap<String, IPTracker>();
   private int maxRequestsPerTimePeriod;
   private int timePeriodInMs;
+  private int bandTimeInMs;
 
-  public IPStats(int maxRequestsPerTimePeriod, int timePeriodInMs)
+  public IPStats(int maxRequestsPerTimePeriod, int timePeriodInMs, int bandTimeInMs)
   {
     this.maxRequestsPerTimePeriod = maxRequestsPerTimePeriod;
     this.timePeriodInMs = timePeriodInMs;
+    this.bandTimeInMs = bandTimeInMs;
   }
 
   public boolean shouldRateLimit(String ipAddress, long currentTimeMillis)
