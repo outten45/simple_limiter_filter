@@ -26,15 +26,26 @@ public class IPTracker
     timeStamps.add(new Long(startCurrentTimeMillis));
   }
 
+  public void addEntry(int maxRequestsPerTimePeriod,
+                       int timePeriodInMs,
+                       long currentTimeMillis)
+  {
+    List tempList = findTimesToRemove(timePeriodInMs, currentTimeMillis);
+    timeStamps.removeAll(tempList);
+    addEntry(currentTimeMillis);
+  }
+
+  public void addEntry(long currentTimeMillis) 
+  {
+    timeStamps.add(new Long(currentTimeMillis));
+  }
+
   public boolean hasReachrateLimit(int maxRequestsPerTimePeriod,
                                    int timePeriodInMs,
                                    long currentTimeMillis)
   {
     boolean result = false;
-    List tempList = findTimesToRemove(timePeriodInMs, currentTimeMillis);
-    timeStamps.removeAll(tempList);
-    timeStamps.add(new Long(currentTimeMillis));
-    
+    addEntry(maxRequestsPerTimePeriod, timePeriodInMs, currentTimeMillis);
     if (timeStamps.size() >= maxRequestsPerTimePeriod)
     {
       result = true;
@@ -54,5 +65,20 @@ public class IPTracker
       }
     }
     return tempList;
+  }
+
+  public int size() 
+  {
+    return timeStamps.size();
+  }
+
+  public String getIpAddress() 
+  {
+    return ipAddress;
+  }
+
+  public List getTimeStamps()
+  {
+    return timeStamps;
   }
 }
