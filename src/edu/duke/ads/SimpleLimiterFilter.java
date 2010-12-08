@@ -7,12 +7,14 @@ package edu.duke.ads;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.concurrent.ConcurrentHashMap;
@@ -27,6 +29,7 @@ public class SimpleLimiterFilter implements Filter
   private int maxRequestsPerTimePeriod = 50; // 50 requests per time period
   private int timePeriodInMs = 300000; // 5 minutes
   private IPStats ipStats;
+  private ServletContext servletContext;
   
 
   public void init(FilterConfig fc) throws ServletException
@@ -43,21 +46,24 @@ public class SimpleLimiterFilter implements Filter
     {
       timePeriodInMs = Integer.parseInt(timePeriod);
     }
+    servletContext = fc.getServletContext();
 
     ipStats = new IPStats(maxRequestsPerTimePeriod, timePeriodInMs);
   }
 
-  public void doFilter(ServletRequest sr, ServletResponse sr1, FilterChain fc)
+  public void doFilter(ServletRequest request, ServletResponse response, FilterChain fc)
           throws IOException, ServletException
   {
-    String ipAddress = sr.getRemoteAddr();
+    String ipAddress = request.getRemoteAddr();
     Date d = new Date();
     if (ipStats.shouldRateLimit(ipAddress, d.getTime())) {
-
+      PrintWriter out = response.getWriter();
+      out.write("Rate Limit Exceeded");
+      servletContext.log(d.toString() + ": Blocked IP " + ipAddress);
     }
     else
     {
-      fc.doFilter(sr, sr1);
+      fc.doFilter(request, response);
       return;
     }
   }
@@ -65,6 +71,7 @@ public class SimpleLimiterFilter implements Filter
   public void destroy()
   {
     ipStats = null;
+    servletContext = null;
   }
 
 
