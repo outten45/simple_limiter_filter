@@ -1,6 +1,6 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * 
+ * 
  */
 package edu.duke.ads;
 
@@ -11,7 +11,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  *
- * @author outtenr
+ * 
  */
 public class IPTracker
 {

@@ -1,6 +1,6 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * 
+ * 
  */
 package edu.duke.ads;
 
@@ -21,7 +21,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  *
- * @author outtenr
  */
 public class SimpleLimiterFilter implements Filter
 {
