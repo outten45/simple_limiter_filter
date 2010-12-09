@@ -4,7 +4,6 @@
  */
 package edu.duke.ads;
 
-import java.util.Date;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -26,20 +25,22 @@ public class IPStats
     this.bandTimeInMs = bandTimeInMs;
   }
 
+
   public boolean shouldRateLimit(String ipAddress, long currentTimeMillis)
   {
     boolean result = false;
 
     if (ipToIPTracker.containsKey(ipAddress))
     {
-      IPTracker ipt = (IPTracker)ipToIPTracker.get(ipAddress);
-      if (ipt.hasReachrateLimit(maxRequestsPerTimePeriod, timePeriodInMs, currentTimeMillis)) {
+      IPTracker ipt = (IPTracker) ipToIPTracker.get(ipAddress);
+      if (ipt.hasReachrateLimit(maxRequestsPerTimePeriod, timePeriodInMs, currentTimeMillis))
+      {
         result = true;
       }
     }
     else
     {
-      IPTracker ipTracker = new IPTracker(ipAddress, currentTimeMillis);
+      IPTracker ipTracker = new IPTracker(ipAddress, currentTimeMillis, bandTimeInMs);
       ipToIPTracker.put(ipAddress, ipTracker);
     }
     return result;

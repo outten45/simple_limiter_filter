@@ -41,7 +41,7 @@ describe "IPTracker" do
   
   describe "new" do
     before do
-      @ipTracker = ADS::IPTracker.new("2.2.2.2", get_time)
+      @ipTracker = ADS::IPTracker.new("2.2.2.2", get_time, 60000)
     end
     
     it "should have a single entry" do
@@ -60,7 +60,7 @@ describe "IPTracker" do
 
   describe "with older entries" do
     before do
-      @ipTracker = ADS::IPTracker.new("2.2.2.2", (get_time - (75*1000)))
+      @ipTracker = ADS::IPTracker.new("2.2.2.2", (get_time - (75*1000)), 60000)
     end
 
     it "should remove initial entry and leave a size of 1" do
@@ -87,6 +87,27 @@ describe "IPTracker" do
         @ipTracker.size.must_equal 1
       end
     end
+  end
+
+  describe "when banded" do
+    before do
+      @time = get_time
+      @reqs = 2
+      @band_time = 5000
+      @ipTracker = ADS::IPTracker.new("2.2.2.2", @time, @band_time)
+      @ipTracker.addEntry(@reqs, @band_time, @time)
+    end
+
+    it "should haved reach limit" do
+      @ipTracker.hasReachrateLimit(@reqs, @band_time, get_time).must_equal true
+    end
+
+    it "should rate limit with less than 5 seconds" do
+      @ipTracker.hasReachrateLimit(@reqs, @band_time, (@time+4999)).must_equal true
+    end
     
+    it "should not rate limit with greater than 5 seconds" do
+      @ipTracker.hasReachrateLimit(@reqs, @band_time, (@time+5001)).must_equal false
+    end
   end
 end

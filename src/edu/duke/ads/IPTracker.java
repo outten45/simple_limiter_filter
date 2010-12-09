@@ -18,12 +18,16 @@ public class IPTracker
 
   private String ipAddress;
   private List timeStamps;
+  private Long bandUntilTime;
+  private int bandTimeInMs;
 
-  public IPTracker(String ipAddress, long startCurrentTimeMillis)
+  public IPTracker(String ipAddress, long startCurrentTimeMillis, int bandTimeInMs)
   {
     this.ipAddress = ipAddress;
     timeStamps = new CopyOnWriteArrayList();
     timeStamps.add(new Long(startCurrentTimeMillis));
+    bandUntilTime = startCurrentTimeMillis-1000;
+    this.bandTimeInMs = bandTimeInMs;
   }
 
   public void addEntry(int maxRequestsPerTimePeriod,
@@ -45,9 +49,15 @@ public class IPTracker
                                    long currentTimeMillis)
   {
     boolean result = false;
+    if (currentTimeMillis < bandUntilTime) 
+    {
+      result = true;
+    }
     addEntry(maxRequestsPerTimePeriod, timePeriodInMs, currentTimeMillis);
     if (timeStamps.size() >= maxRequestsPerTimePeriod)
     {
+      long bt = new Integer(bandTimeInMs).longValue();
+      bandUntilTime = (currentTimeMillis + bt);
       result = true;
     }
     return result;

@@ -12,7 +12,8 @@ Simple filter to do some rate limiting.  Netbeans project included.
 
 2. Setup with filter in your web.xml.
 
-      <filter>
+
+        <filter>
         <filter-name>SimpleLimiterFilter</filter-name>
         <filter-class>edu.duke.ads.SimpleLimiterFilter</filter-class>
         <init-param>
@@ -23,7 +24,18 @@ Simple filter to do some rate limiting.  Netbeans project included.
           <param-name>timePeriodInMs</param-name>
           <param-value>30000</param-value> <!-- over 30 seconds -->
         </init-param>
-      </filter>
+        <init-param>
+          <param-name>whiteListIPRegex</param-name>
+          <param-value>^(127\.0\.0\.1|192\.168.*)$</param-value> <!-- localhost and 192.168 -->
+        </init-param>
+        </filter>
+
+        <filter-mapping>
+          <filter-name>
+            SimpleLimiterFilter
+          </filter-name>
+          <url-pattern>/</url-pattern>
+        </filter-mapping>
 
 ## TODOs
 
