@@ -89,7 +89,7 @@ describe "IPTracker" do
     end
   end
 
-  describe "when banded" do
+  describe "with banded entries" do
     before do
       @time = get_time
       @reqs = 2
