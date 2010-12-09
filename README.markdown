@@ -47,5 +47,5 @@ Simple filter to do some rate limiting.  Netbeans project included.
 
 ## TODOs
 
-* add functionality for the period of time to band request (bandTimeInMs)
-* add "whitelist" of IPs
+* test IPStats class
+* add more documentation

@@ -1,9 +1,11 @@
 require 'rubygems'
 require 'java'
+
 gem 'minitest' # ensures you're using the gem, and not the built in MT
 require 'minitest/autorun'
 require 'minitest/spec'
 require 'minitest/pride'
+
 require File.join(File.dirname(__FILE__), "/../dist/SimpleLimiterFilter.jar")
 
 module ADS
@@ -31,7 +33,7 @@ describe "IPStats" do
   it "should fail rate limiting with more that 10 requests in 60 seconds" do
     ipstats = ADS::IPStats.new(10, 60000, 300000)
     t = get_time
-    (1..15).each {|i| ipstats.shouldRateLimit("1.1.1.1", t)}
+    (1..10).each {|i| ipstats.shouldRateLimit("1.1.1.1", t)}
     ipstats.shouldRateLimit("1.1.1.1", get_time).must_equal true
   end
 end
