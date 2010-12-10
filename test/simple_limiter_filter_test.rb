@@ -6,7 +6,9 @@ require 'minitest/autorun'
 require 'minitest/spec'
 require 'minitest/pride'
 
-require File.join(File.dirname(__FILE__), "/../dist/SimpleLimiterFilter.jar")
+Dir["#{File.dirname(__FILE__)}/../build/**/*.jar"].each do |f|
+  require f
+end
 
 module ADS
   include_package "edu.duke.ads"

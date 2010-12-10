@@ -4,11 +4,11 @@ Simple filter to do some rate limiting.  Netbeans project included.
 
 ## Building
 
-    ant default
+    ant
 
 ## Installation
 
-1. Add dist/SimpleLimiterFilter.jar to you web applications WEB-INF/lib directory.
+1. Add build/dist/SimpleLimiterFilter.jar to you web applications WEB-INF/lib directory.
 
 2. Setup with filter in your web.xml.
 

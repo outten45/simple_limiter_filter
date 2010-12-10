@@ -1,5 +1,8 @@
 /*
+ * SimpleLimiterFilter
  * 
+ * Used to limit bursts of requests from offending IPs before the
+ * are processed by the original application.
  * 
  */
 package edu.duke.ads;
@@ -17,13 +20,16 @@ import java.io.PrintWriter;
 import java.util.Date;
 import java.util.regex.Pattern;
 
-/**
- *
- */
 public class SimpleLimiterFilter implements Filter
 {
 
+  /*
+   * maxRequestsPerTimePeriod - maximum number of requests to process
+   */
   private int maxRequestsPerTimePeriod = 50; // 50 requests per time period
+  /*
+   * tim
+   */
   private int timePeriodInMs = 30000; // 30 seconds
   private int bandTimeInMs = 300000; // band for 5 minutes
   private String whiteListIPRegex = "^xxxxxxxxxxxxxx$";
