@@ -23,10 +23,6 @@ end
 describe "IPStats" do
   include JavaHelpers
   
-  before do
-
-  end
-  
   it "should pass rate limiting" do
     ipstats = ADS::IPStats.new(10, 60000, 300000)
     ipstats.shouldRateLimit("1.1.1.1", get_time).must_equal false
@@ -38,6 +34,29 @@ describe "IPStats" do
     (1..10).each {|i| ipstats.shouldRateLimit("1.1.1.1", t)}
     ipstats.shouldRateLimit("1.1.1.1", get_time).must_equal true
   end
+
+  describe "cleaning IPs" do
+
+    before do
+      @visits = 10
+      @ipstats = ADS::IPStats.new(10, 5000, 300000)
+      t = get_time - 10000
+      (1..@visits).each {|i| @ipstats.shouldRateLimit("1.1.1.1", t)}
+    end
+
+    it "should have all visits if clean isn't called" do
+      ip_tracker = @ipstats.getIPTracker("1.1.1.1")
+      ip_tracker.size.must_equal @visits
+    end
+    
+    it "should remove IP that was not recently visited" do
+      @ipstats.clean
+      ip_tracker = @ipstats.getIPTracker("1.1.1.1")
+      ip_tracker.must_equal nil
+    end
+
+  end
+  
 end
 
 describe "IPTracker" do
@@ -103,15 +122,15 @@ describe "IPTracker" do
     end
 
     it "should haved reach limit" do
-      @ipTracker.hasReachrateLimit(@reqs, @band_time, get_time).must_equal true
+      @ipTracker.hasReachedRateLimit(@reqs, @band_time, get_time).must_equal true
     end
 
     it "should rate limit with less than 5 seconds" do
-      @ipTracker.hasReachrateLimit(@reqs, @band_time, (@time+4999)).must_equal true
+      @ipTracker.hasReachedRateLimit(@reqs, @band_time, (@time+4999)).must_equal true
     end
     
     it "should not rate limit with greater than 5 seconds" do
-      @ipTracker.hasReachrateLimit(@reqs, @band_time, (@time+5001)).must_equal false
+      @ipTracker.hasReachedRateLimit(@reqs, @band_time, (@time+5001)).must_equal false
     end
   end
 end
